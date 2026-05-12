@@ -62,6 +62,15 @@ const pool = new Pool({
         try { await pool.query('ALTER TABLE tasks ADD COLUMN notes TEXT'); } catch (e) {}
         try { await pool.query('ALTER TABLE notifications ADD COLUMN username TEXT'); } catch (e) {}
 
+        // Crear usuario admin si no existe
+        const userCount = await pool.query('SELECT COUNT(*) FROM users');
+        if (parseInt(userCount.rows[0].count) === 0) {
+            const bcrypt = require('bcryptjs');
+            const adminPassword = bcrypt.hashSync('admin123', 10);
+            await pool.query('INSERT INTO users (username, password, role) VALUES ($1, $2, $3)', ['admin', adminPassword, 'admin']);
+            console.log('Usuario administrador creado: admin / admin123');
+        }
+
         console.log('Database initialized');
     } catch (err) {
         console.error('Error initializing database:', err);
