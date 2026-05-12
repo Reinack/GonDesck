@@ -194,6 +194,25 @@ app.put('/api/users/:id/password', isAuthenticated, isAdmin, async (req, res) =>
     }
 });
 
+app.put('/api/users/:id', isAuthenticated, isAdmin, async (req, res) => {
+    const { id } = req.params;
+    const { username, role } = req.body;
+    try {
+        // Check if username is already taken by another user
+        const existing = await pool.query('SELECT id FROM users WHERE username = $1 AND id != $2', [username, id]);
+        if (existing.rows.length > 0) {
+            return res.status(400).json({ error: 'Nombre de usuario ya existe' });
+        }
+        const oldUserResult = await pool.query('SELECT username, role FROM users WHERE id = $1', [id]);
+        const oldUser = oldUserResult.rows[0];
+        await pool.query('UPDATE users SET username = $1, role = $2 WHERE id = $3', [username, role, id]);
+        await logActivity(req, 'Actualización de usuario', { usuario_antiguo: oldUser.username, nuevo: username, rol: role });
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 app.delete('/api/users/:id', isAuthenticated, isAdmin, async (req, res) => {
     const { id } = req.params;
     try {

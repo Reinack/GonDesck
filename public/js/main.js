@@ -590,6 +590,7 @@ const app = {
                     <span class="user-role-badge">${user.role}</span>
                 </div>
                 <div class="user-actions">
+                    <button class="btn btn-icon" style="color: var(--primary);" onclick="app.editUser(${user.id}, '${user.username}', '${user.role}')"><i class="fas fa-edit"></i></button>
                     <button class="btn btn-icon" style="color: var(--accent);" onclick="app.openPasswordModal(${user.id}, '${user.username}')"><i class="fas fa-key"></i></button>
                     <button class="btn btn-icon" style="color: var(--priority-high);" onclick="app.deleteUser(${user.id})"><i class="fas fa-trash"></i></button>
                 </div>
@@ -609,12 +610,31 @@ const app = {
         }
     },
 
-    openUserModal() {
+    openUserModal(user = null) {
         this.userModal.classList.add('active');
         this.userForm.reset();
+        const title = document.getElementById('user-modal-title');
+        if (user) {
+            title.textContent = 'Editar Usuario';
+            document.getElementById('user-id').value = user.id;
+            document.getElementById('user-username').value = user.username;
+            document.getElementById('user-role').value = user.role;
+            document.getElementById('user-password-group').style.display = 'none';
+            document.getElementById('user-password').required = false;
+        } else {
+            title.textContent = 'Nuevo Usuario';
+            document.getElementById('user-id').value = '';
+            document.getElementById('user-password-group').style.display = 'block';
+            document.getElementById('user-password').required = true;
+        }
+    },
+
+    editUser(id, username, role) {
+        this.openUserModal({ id, username, role });
     },
 
     async handleUserSubmit() {
+        const userId = document.getElementById('user-id').value;
         const userData = {
             username: document.getElementById('user-username').value,
             password: document.getElementById('user-password').value,
@@ -622,11 +642,23 @@ const app = {
         };
 
         try {
-            const response = await fetch('/api/users', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(userData)
-            });
+            let response;
+            if (userId) {
+                // Edit existing user
+                delete userData.password; // Don't send password for edit
+                response = await fetch(`/api/users/${userId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userData)
+                });
+            } else {
+                // Create new user
+                response = await fetch('/api/users', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userData)
+                });
+            }
 
             if (response.ok) {
                 this.userModal.classList.remove('active');
