@@ -1,4 +1,4 @@
-const pool = require('./server/database');
+const db = require('./server/database');
 
 (async () => {
     try {
@@ -8,7 +8,7 @@ const pool = require('./server/database');
         ];
 
         for (const c of clients) {
-            await pool.query('INSERT INTO clients (name, email, phone) VALUES ($1, $2, $3) ON CONFLICT (name) DO NOTHING', [c.name, c.email, c.phone]);
+            await db.query('INSERT INTO clients (name, email, phone) VALUES ($1, $2, $3) ON CONFLICT (name) DO NOTHING', [c.name, c.email, c.phone]);
         }
 
         console.log('Clientes de ejemplo creados.');

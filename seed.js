@@ -1,4 +1,4 @@
-const pool = require('./server/database');
+const db = require('./server/database');
 
 const bcrypt = require('bcryptjs');
 
@@ -7,7 +7,7 @@ const bcrypt = require('bcryptjs');
         // Crear usuario administrador si no existe
         const adminPassword = bcrypt.hashSync('admin123', 10);
         try {
-            await pool.query('INSERT INTO users (username, password, role) VALUES ($1, $2, $3)', ['admin', adminPassword, 'admin']);
+            await db.query('INSERT INTO users (username, password, role) VALUES ($1, $2, $3)', ['admin', adminPassword, 'admin']);
             console.log('Usuario administrador creado: admin / admin123');
         } catch (e) {
             console.log('El usuario administrador ya existe.');
@@ -49,7 +49,7 @@ const bcrypt = require('bcryptjs');
         ];
 
         for (const task of tasks) {
-            await pool.query(`
+            await db.query(`
                 INSERT INTO tasks (title, description, assigned_to, due_date, status, priority)
                 VALUES ($1, $2, $3, $4, $5, $6)
             `, [task.title, task.description, task.assigned_to, task.due_date, task.status, task.priority]);
