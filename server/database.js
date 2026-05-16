@@ -67,12 +67,21 @@ if (useSQLite) {
     try { db.prepare('ALTER TABLE tasks ADD COLUMN notes TEXT').run(); } catch (e) {}
     try { db.prepare('ALTER TABLE notifications ADD COLUMN username TEXT').run(); } catch (e) {}
 
+    // Auto-seed: crear admin si no hay usuarios
+    const userCount = db.prepare('SELECT COUNT(*) as n FROM users').get();
+    if (userCount.n === 0) {
+        const bcrypt = require('bcryptjs');
+        const hash = bcrypt.hashSync('admin123', 10);
+        db.prepare('INSERT INTO users (username, password, role) VALUES (?, ?, ?)').run('admin', hash, 'admin');
+        console.log('Usuario admin creado automáticamente (admin/admin123)');
+    }
+
     console.log('Database initialized (SQLite local)');
 
     // Wrapper para compatibilidad (promise-based para usar await)
     db.query = (sql, params = []) => {
         return Promise.resolve().then(() => {
-            const stmt = db.prepare(sql);
+            const stmt = db.prepare(sql.replace(/\$\d+/g, '?'));
             if (sql.trim().toUpperCase().startsWith('SELECT')) {
                 return { rows: stmt.all(...params) };
             }
