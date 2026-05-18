@@ -46,37 +46,57 @@
             </div>
             <nav class="sidebar-nav">
                 <ul>
-                    <li class="active" data-view="dashboard">
-                        <i class="fas fa-chart-pie"></i>
-                        <span>Dashboard</span>
-                    </li>
                     <li data-view="tasks">
                         <i class="fas fa-tasks"></i>
                         <span>Tareas</span>
                     </li>
-                    <li data-view="calendar">
-                        <i class="fas fa-calendar-alt"></i>
-                        <span>Calendario</span>
+                    <li class="active" data-view="dashboard">
+                        <i class="fas fa-chart-pie"></i>
+                        <span>Control de Tareas</span>
+                    </li>
+                    <li data-view="proyectos">
+                        <i class="fas fa-layer-group"></i>
+                        <span>Proyectos</span>
+                    </li>
+                    <li data-view="reuniones">
+                        <i class="fas fa-handshake"></i>
+                        <span>Reuniones</span>
+                    </li>
+                    <li data-view="presupuestos" class="admin-only">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        <span>Presupuestos</span>
                     </li>
                     <li data-view="clients" class="admin-only">
                         <i class="fas fa-user-tie"></i>
                         <span>Clientes</span>
                     </li>
+                    <li data-view="finanzas" class="admin-only">
+                        <i class="fas fa-coins"></i>
+                        <span>Finanzas</span>
+                    </li>
+                    <li data-view="pipeline" class="admin-only">
+                        <i class="fas fa-satellite-dish"></i>
+                        <span>Centro de Prospección</span>
+                    </li>
+                    <li data-view="kb">
+                        <i class="fas fa-book-open"></i>
+                        <span>Base de Conocimiento</span>
+                    </li>
                     <li data-view="users" class="admin-only">
                         <i class="fas fa-users-cog"></i>
-                        <span>Usuarios</span>
+                        <span>Mi Equipo</span>
                     </li>
                     <li data-view="logs" class="admin-only">
                         <i class="fas fa-history"></i>
-                        <span>Seguimiento</span>
+                        <span>Registro</span>
+                    </li>
+                    <li data-view="manual">
+                        <i class="fas fa-book"></i>
+                        <span>Manual de Uso</span>
                     </li>
                 </ul>
             </nav>
             <div class="sidebar-footer">
-                <button id="add-task-btn" class="btn btn-primary" style="width: 100%; margin-bottom: 1rem;">
-                    <i class="fas fa-plus"></i>
-                    <span>Nueva Tarea</span>
-                </button>
                 <button id="logout-btn" class="btn btn-secondary" style="width: 100%;">
                     <i class="fas fa-sign-out-alt"></i>
                     <span>Cerrar Sesión</span>
@@ -116,7 +136,7 @@
                     <div class="banner-left">
                         <div class="banner-icon-wrap"><i class="fas fa-chart-pie"></i></div>
                         <div>
-                            <h1>Dashboard</h1>
+                            <h1>Control de Tareas</h1>
                             <p class="subtitle">Resumen del progreso de tu equipo</p>
                         </div>
                     </div>
@@ -146,12 +166,21 @@
                     </div>
                 </div>
 
-                <div class="recent-tasks">
-                    <div class="section-title">
-                        <h2>Tareas Recientes</h2>
-                        <button class="btn btn-link" onclick="app.switchView('tasks')">Ver todas</button>
+                <div style="margin-top:2rem;">
+                    <div class="section-title" style="margin-bottom:1rem;">
+                        <h2 style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:500;">Calendario</h2>
+                        <div class="calendar-controls">
+                            <button id="prev-month" class="btn btn-icon"><i class="fas fa-chevron-left"></i></button>
+                            <h2 id="current-month-year" style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:500;min-width:140px;text-align:center;"></h2>
+                            <button id="next-month" class="btn btn-icon"><i class="fas fa-chevron-right"></i></button>
+                        </div>
                     </div>
-                    <div class="task-list" id="recent-task-list"></div>
+                    <div class="calendar-container">
+                        <div class="calendar-header">
+                            <span>Dom</span><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span>
+                        </div>
+                        <div class="calendar-grid" id="calendar-days"></div>
+                    </div>
                 </div>
             </section>
 
@@ -165,6 +194,10 @@
                             <p class="subtitle">Administrá y filtrá el trabajo de tu equipo</p>
                         </div>
                     </div>
+                    <button id="add-task-btn" class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        <span>Nueva Tarea</span>
+                    </button>
                 </div>
                 <div id="calendar-filter-active" style="display:none; margin-bottom:0.75rem;">
                     <div class="active-date-filter">
@@ -227,7 +260,7 @@
                     <div class="banner-left">
                         <div class="banner-icon-wrap"><i class="fas fa-users-cog"></i></div>
                         <div>
-                            <h1>Usuarios</h1>
+                            <h1>Mi Equipo</h1>
                             <p class="subtitle">Administrá el acceso y perfiles del equipo</p>
                         </div>
                     </div>
@@ -245,7 +278,7 @@
                     <div class="banner-left">
                         <div class="banner-icon-wrap"><i class="fas fa-history"></i></div>
                         <div>
-                            <h1>Seguimiento</h1>
+                            <h1>Registro</h1>
                             <p class="subtitle">Historial completo de acciones del sistema</p>
                         </div>
                     </div>
@@ -260,29 +293,699 @@
                 </div>
             </section>
 
-            <!-- Calendar View -->
-            <section id="view-calendar" class="view">
-                <div class="section-banner banner-calendar">
+            <!-- Reuniones View -->
+            <section id="view-reuniones" class="view">
+                <div class="section-banner banner-reuniones">
                     <div class="banner-left">
-                        <div class="banner-icon-wrap"><i class="fas fa-calendar-alt"></i></div>
+                        <div class="banner-icon-wrap"><i class="fas fa-handshake"></i></div>
                         <div>
-                            <h1>Calendario</h1>
-                            <p class="subtitle">Visualizá las fechas de entrega de las tareas</p>
+                            <h1>Reuniones</h1>
+                            <p class="subtitle">Agendá y gestioná reuniones virtuales y presenciales</p>
                         </div>
                     </div>
-                    <div class="calendar-controls">
-                        <button id="prev-month" class="btn btn-icon"><i class="fas fa-chevron-left"></i></button>
-                        <h2 id="current-month-year">Mayo 2026</h2>
-                        <button id="next-month" class="btn btn-icon"><i class="fas fa-chevron-right"></i></button>
+                    <button id="add-reunion-btn" class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        <span>Nueva Reunión</span>
+                    </button>
+                </div>
+
+                <!-- Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card" style="cursor:default;">
+                        <div class="stat-icon" style="background:rgba(244,114,182,0.15);color:#F472B6;"><i class="fas fa-handshake"></i></div>
+                        <div class="stat-info"><h3>Total</h3><span class="stat-value" id="reun-stat-total">0</span></div>
+                    </div>
+                    <div class="stat-card" style="cursor:default;">
+                        <div class="stat-icon progress"><i class="fas fa-clock"></i></div>
+                        <div class="stat-info"><h3>Programadas</h3><span class="stat-value" id="reun-stat-programadas">0</span></div>
+                    </div>
+                    <div class="stat-card" style="cursor:default;">
+                        <div class="stat-icon completed"><i class="fas fa-check-circle"></i></div>
+                        <div class="stat-info"><h3>Realizadas</h3><span class="stat-value" id="reun-stat-realizadas">0</span></div>
                     </div>
                 </div>
-                <div class="calendar-container">
-                    <div class="calendar-header">
-                        <span>Dom</span><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span>
+
+                <!-- Filtros -->
+                <div class="reun-filters">
+                    <div class="fin-search-input-wrap" style="flex:1;min-width:180px;">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="reun-search" placeholder="Buscar por asunto o cliente...">
                     </div>
-                    <div class="calendar-grid" id="calendar-days"></div>
+                    <select id="reun-filter-type" class="form-control" style="width:auto;min-width:150px;">
+                        <option value="all">Virtual y Presencial</option>
+                        <option value="virtual">Solo Virtual</option>
+                        <option value="presencial">Solo Presencial</option>
+                    </select>
+                    <select id="reun-filter-status" class="form-control" style="width:auto;min-width:150px;">
+                        <option value="all">Todos los estados</option>
+                        <option value="programada">Programada</option>
+                        <option value="realizada">Realizada</option>
+                        <option value="cancelada">Cancelada</option>
+                    </select>
+                    <input type="date" id="reun-filter-from" class="form-control" style="width:auto;" title="Desde">
+                    <input type="date" id="reun-filter-to"   class="form-control" style="width:auto;" title="Hasta">
+                    <button class="btn btn-secondary" id="reun-clear-filters" title="Limpiar filtros"><i class="fas fa-times"></i></button>
+                </div>
+
+                <!-- Toggle lista / calendario -->
+                <div class="reun-view-toggle">
+                    <button class="reun-toggle-btn active" data-reunview="lista"><i class="fas fa-list"></i> Lista</button>
+                    <button class="reun-toggle-btn" data-reunview="calendario"><i class="fas fa-calendar-alt"></i> Calendario</button>
+                </div>
+
+                <!-- Vista lista -->
+                <div id="reun-lista" class="reun-grid"></div>
+
+                <!-- Vista calendario -->
+                <div id="reun-calendario" style="display:none;">
+                    <div class="reun-cal-header">
+                        <button id="reun-prev-month" class="btn btn-icon"><i class="fas fa-chevron-left"></i></button>
+                        <h2 id="reun-month-label"></h2>
+                        <button id="reun-next-month" class="btn btn-icon"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    <div class="calendar-container">
+                        <div class="calendar-header">
+                            <span>Dom</span><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span>
+                        </div>
+                        <div class="calendar-grid" id="reun-cal-days"></div>
+                    </div>
+                    <div id="reun-cal-detail" style="margin-top:1.25rem;"></div>
                 </div>
             </section>
+
+            <!-- Pipeline de Ventas View -->
+            <section id="view-pipeline" class="view">
+                <div class="section-banner banner-pipeline">
+                    <div class="banner-left">
+                        <div class="banner-icon-wrap"><i class="fas fa-satellite-dish"></i></div>
+                        <div>
+                            <h1>Centro de Prospección</h1>
+                            <p class="subtitle">Seguí cada oportunidad desde el primer contacto hasta cerrar la venta. Mové los deals entre etapas y nunca pierdas un prospecto de vista.</p>
+                        </div>
+                    </div>
+                    <button id="add-deal-btn" class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        <span>Nueva Oportunidad</span>
+                    </button>
+                </div>
+
+                <!-- Stats -->
+                <div class="stats-grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));">
+                    <div class="stat-card" style="cursor:default;">
+                        <div class="stat-icon" style="background:rgba(251,191,36,0.15);color:#FBBF24;"><i class="fas fa-fire"></i></div>
+                        <div class="stat-info"><h3>En Curso</h3><span class="stat-value" id="pipe-stat-active">0</span></div>
+                    </div>
+                    <div class="stat-card" style="cursor:default;">
+                        <div class="stat-icon completed"><i class="fas fa-trophy"></i></div>
+                        <div class="stat-info"><h3>Ganados</h3><span class="stat-value" id="pipe-stat-ganados">0</span></div>
+                    </div>
+                    <div class="stat-card" style="cursor:default;">
+                        <div class="stat-icon ingreso"><i class="fas fa-dollar-sign"></i></div>
+                        <div class="stat-info"><h3>Valor Potencial</h3><span class="stat-value" id="pipe-stat-valor">$0</span></div>
+                    </div>
+                    <div class="stat-card" style="cursor:default;">
+                        <div class="stat-icon" style="background:rgba(52,211,153,0.15);color:#34D399;"><i class="fas fa-percentage"></i></div>
+                        <div class="stat-info"><h3>Tasa de Cierre</h3><span class="stat-value" id="pipe-stat-rate">0%</span></div>
+                    </div>
+                </div>
+
+                <!-- Filtro rápido -->
+                <div class="pipe-topbar">
+                    <div class="fin-search-input-wrap" style="flex:1;max-width:320px;">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="pipe-search" placeholder="Buscar oportunidad o contacto...">
+                    </div>
+                    <select id="pipe-filter-user" class="form-control admin-only" style="width:auto;min-width:150px;">
+                        <option value="all">Todos los responsables</option>
+                    </select>
+                </div>
+
+                <!-- Kanban Board -->
+                <div class="pipe-board" id="pipe-board">
+                    <div class="pipe-col" data-stage="prospecto">
+                        <div class="pipe-col-header"><span class="pipe-col-dot dot-prospecto"></span>Prospecto<span class="pipe-col-count" id="cnt-prospecto">0</span></div>
+                        <div class="pipe-col-body" id="col-prospecto"></div>
+                    </div>
+                    <div class="pipe-col" data-stage="contactado">
+                        <div class="pipe-col-header"><span class="pipe-col-dot dot-contactado"></span>Contactado<span class="pipe-col-count" id="cnt-contactado">0</span></div>
+                        <div class="pipe-col-body" id="col-contactado"></div>
+                    </div>
+                    <div class="pipe-col" data-stage="propuesta">
+                        <div class="pipe-col-header"><span class="pipe-col-dot dot-propuesta"></span>Propuesta<span class="pipe-col-count" id="cnt-propuesta">0</span></div>
+                        <div class="pipe-col-body" id="col-propuesta"></div>
+                    </div>
+                    <div class="pipe-col" data-stage="negociando">
+                        <div class="pipe-col-header"><span class="pipe-col-dot dot-negociando"></span>Negociando<span class="pipe-col-count" id="cnt-negociando">0</span></div>
+                        <div class="pipe-col-body" id="col-negociando"></div>
+                    </div>
+                    <div class="pipe-col" data-stage="ganado">
+                        <div class="pipe-col-header"><span class="pipe-col-dot dot-ganado"></span>Ganado<span class="pipe-col-count" id="cnt-ganado">0</span></div>
+                        <div class="pipe-col-body" id="col-ganado"></div>
+                    </div>
+                    <div class="pipe-col" data-stage="perdido">
+                        <div class="pipe-col-header"><span class="pipe-col-dot dot-perdido"></span>Perdido<span class="pipe-col-count" id="cnt-perdido">0</span></div>
+                        <div class="pipe-col-body" id="col-perdido"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Proyectos View -->
+            <section id="view-proyectos" class="view">
+                <div class="section-banner banner-proyectos">
+                    <div class="banner-left">
+                        <div class="banner-icon-wrap"><i class="fas fa-layer-group"></i></div>
+                        <div>
+                            <h1>Proyectos</h1>
+                            <p class="subtitle">Organizá el trabajo por proyecto y seguí el progreso en tiempo real</p>
+                        </div>
+                    </div>
+                    <button id="add-proyecto-btn" class="btn btn-primary admin-only">
+                        <i class="fas fa-plus"></i>
+                        <span>Nuevo Proyecto</span>
+                    </button>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card" style="cursor:default;">
+                        <div class="stat-icon" style="background:rgba(99,102,241,0.15);color:#818CF8;"><i class="fas fa-layer-group"></i></div>
+                        <div class="stat-info"><h3>Total</h3><span class="stat-value" id="proy-stat-total">0</span></div>
+                    </div>
+                    <div class="stat-card" style="cursor:default;">
+                        <div class="stat-icon progress"><i class="fas fa-spinner"></i></div>
+                        <div class="stat-info"><h3>En Curso</h3><span class="stat-value" id="proy-stat-activos">0</span></div>
+                    </div>
+                    <div class="stat-card" style="cursor:default;">
+                        <div class="stat-icon completed"><i class="fas fa-flag-checkered"></i></div>
+                        <div class="stat-info"><h3>Entregados</h3><span class="stat-value" id="proy-stat-entregados">0</span></div>
+                    </div>
+                    <div class="stat-card" style="cursor:default;">
+                        <div class="stat-icon" style="background:rgba(99,102,241,0.15);color:#818CF8;"><i class="fas fa-chart-line"></i></div>
+                        <div class="stat-info"><h3>Progreso Promedio</h3><span class="stat-value" id="proy-stat-progreso">0%</span></div>
+                    </div>
+                </div>
+
+                <div class="proy-filters">
+                    <div class="fin-search-input-wrap" style="flex:1;max-width:320px;">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="proy-search" placeholder="Buscar proyecto o cliente...">
+                    </div>
+                    <select id="proy-filter-status" class="form-control" style="width:auto;min-width:155px;">
+                        <option value="all">Todos los estados</option>
+                        <option value="en_curso">En Curso</option>
+                        <option value="pausado">Pausado</option>
+                        <option value="entregado">Entregado</option>
+                        <option value="cancelado">Cancelado</option>
+                    </select>
+                </div>
+
+                <div class="proy-grid" id="proyectos-list"></div>
+            </section>
+
+            <!-- Base de Conocimiento View -->
+            <section id="view-kb" class="view">
+                <div class="section-banner banner-kb">
+                    <div class="banner-left">
+                        <div class="banner-icon-wrap"><i class="fas fa-book-open"></i></div>
+                        <div>
+                            <h1>Base de Conocimiento</h1>
+                            <p class="subtitle">Guías, procesos y recursos para el equipo</p>
+                        </div>
+                    </div>
+                    <button id="add-kb-btn" class="btn btn-primary admin-only">
+                        <i class="fas fa-plus"></i>
+                        <span>Nuevo Artículo</span>
+                    </button>
+                </div>
+
+                <div class="kb-layout">
+                    <!-- Sidebar de categorías -->
+                    <aside class="kb-sidebar">
+                        <div class="kb-search-wrap">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="kb-search" placeholder="Buscar artículos...">
+                        </div>
+                        <div class="kb-cat-list" id="kb-cat-list">
+                            <button class="kb-cat-item active" data-cat="all">
+                                <i class="fas fa-border-all"></i> Todos
+                                <span class="kb-cat-count" id="kb-count-all">0</span>
+                            </button>
+                        </div>
+                    </aside>
+
+                    <!-- Grid de artículos -->
+                    <div class="kb-content">
+                        <div class="kb-grid" id="kb-list"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Presupuestos View -->
+            <section id="view-presupuestos" class="view">
+                <div class="section-banner banner-presupuestos">
+                    <div class="banner-left">
+                        <div class="banner-icon-wrap"><i class="fas fa-file-invoice-dollar"></i></div>
+                        <div>
+                            <h1>Presupuestos</h1>
+                            <p class="subtitle">Seguimiento de cotizaciones enviadas a clientes y prospectos</p>
+                        </div>
+                    </div>
+                    <button id="add-presupuesto-btn" class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        <span>Nuevo Presupuesto</span>
+                    </button>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card" style="cursor:default;">
+                        <div class="stat-icon" style="background:rgba(167,139,250,0.15);color:#A78BFA;"><i class="fas fa-file-alt"></i></div>
+                        <div class="stat-info"><h3>Total</h3><span class="stat-value" id="pres-stat-total">0</span></div>
+                    </div>
+                    <div class="stat-card" style="cursor:default;">
+                        <div class="stat-icon progress"><i class="fas fa-paper-plane"></i></div>
+                        <div class="stat-info"><h3>Enviados</h3><span class="stat-value" id="pres-stat-enviados">0</span></div>
+                    </div>
+                    <div class="stat-card" style="cursor:default;">
+                        <div class="stat-icon completed"><i class="fas fa-handshake"></i></div>
+                        <div class="stat-info"><h3>Aceptados</h3><span class="stat-value" id="pres-stat-aceptados">0</span></div>
+                    </div>
+                    <div class="stat-card" style="cursor:default;">
+                        <div class="stat-icon ingreso"><i class="fas fa-dollar-sign"></i></div>
+                        <div class="stat-info"><h3>Monto Aceptado</h3><span class="stat-value" id="pres-stat-monto">$0</span></div>
+                    </div>
+                </div>
+
+                <div class="pres-filters">
+                    <div class="pres-filters-row">
+                        <div class="fin-search-input-wrap" style="flex:1;min-width:180px;">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="pres-search" placeholder="Buscar por título o cliente...">
+                        </div>
+                        <select id="pres-filter-status" class="form-control" style="width:auto;min-width:150px;">
+                            <option value="all">Todos los estados</option>
+                            <option value="borrador">Borrador</option>
+                            <option value="enviado">Enviado</option>
+                            <option value="aceptado">Aceptado</option>
+                            <option value="rechazado">Rechazado</option>
+                            <option value="vencido">Vencido</option>
+                        </select>
+                        <select id="pres-sort" class="form-control" style="width:auto;min-width:170px;">
+                            <option value="date_desc">Fecha: más reciente</option>
+                            <option value="date_asc">Fecha: más antiguo</option>
+                            <option value="amount_desc">Monto: mayor primero</option>
+                            <option value="amount_asc">Monto: menor primero</option>
+                            <option value="client_asc">Cliente: A → Z</option>
+                        </select>
+                        <button class="btn btn-secondary" id="pres-clear-filters" title="Limpiar filtros">
+                            <i class="fas fa-times"></i> Limpiar
+                        </button>
+                    </div>
+                    <div class="pres-filters-row">
+                        <div class="pres-filter-group">
+                            <label class="pres-filter-label"><i class="far fa-calendar"></i> Fecha desde</label>
+                            <input type="date" id="pres-from" class="form-control">
+                        </div>
+                        <div class="pres-filter-group">
+                            <label class="pres-filter-label"><i class="far fa-calendar"></i> Fecha hasta</label>
+                            <input type="date" id="pres-to" class="form-control">
+                        </div>
+                        <div class="pres-filter-group">
+                            <label class="pres-filter-label"><i class="fas fa-dollar-sign"></i> Monto mín.</label>
+                            <input type="number" id="pres-amount-min" class="form-control" min="0" step="1" placeholder="0">
+                        </div>
+                        <div class="pres-filter-group">
+                            <label class="pres-filter-label"><i class="fas fa-dollar-sign"></i> Monto máx.</label>
+                            <input type="number" id="pres-amount-max" class="form-control" min="0" step="1" placeholder="Sin límite">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pres-grid" id="presupuestos-list"></div>
+            </section>
+
+            <!-- Finanzas View -->
+            <section id="view-finanzas" class="view">
+                <div class="section-banner banner-finanzas">
+                    <div class="banner-left">
+                        <div class="banner-icon-wrap"><i class="fas fa-coins"></i></div>
+                        <div>
+                            <h1>Finanzas</h1>
+                            <p class="subtitle">Controlá ingresos y gastos de tu negocio</p>
+                        </div>
+                    </div>
+                    <button id="add-finanza-btn" class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        <span>Nuevo Movimiento</span>
+                    </button>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card" style="cursor:default;">
+                        <div class="stat-icon ingreso"><i class="fas fa-arrow-trend-up"></i></div>
+                        <div class="stat-info">
+                            <h3>Ingresos</h3>
+                            <span class="stat-value" id="fin-total-ingresos">$0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="cursor:default;">
+                        <div class="stat-icon gasto"><i class="fas fa-arrow-trend-down"></i></div>
+                        <div class="stat-info">
+                            <h3>Gastos</h3>
+                            <span class="stat-value" id="fin-total-gastos">$0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="cursor:default;">
+                        <div class="stat-icon balance" id="fin-balance-icon"><i class="fas fa-scale-balanced"></i></div>
+                        <div class="stat-info">
+                            <h3>Balance</h3>
+                            <span class="stat-value" id="fin-balance">$0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="fin-charts-toggle-row">
+                    <button id="fin-toggle-charts" class="btn btn-secondary">
+                        <i class="fas fa-chart-bar"></i> <span>Ver Gráficas</span>
+                    </button>
+                </div>
+
+                <div id="fin-charts-panel" style="display:none; margin-bottom:1.75rem;">
+                    <div class="fin-charts-grid">
+                        <div class="fin-chart-card fin-chart-wide">
+                            <div class="fin-chart-title"><i class="fas fa-chart-bar"></i> Evolución mensual — últimos 12 meses</div>
+                            <div style="position:relative;height:220px;"><canvas id="chart-evolucion"></canvas></div>
+                        </div>
+                        <div class="fin-chart-card">
+                            <div class="fin-chart-title"><i class="fas fa-chart-pie"></i> Gastos por categoría</div>
+                            <div style="position:relative;height:240px;"><canvas id="chart-gastos-cat"></canvas></div>
+                        </div>
+                        <div class="fin-chart-card">
+                            <div class="fin-chart-title"><i class="fas fa-chart-pie"></i> Ingresos por categoría</div>
+                            <div style="position:relative;height:240px;"><canvas id="chart-ingresos-cat"></canvas></div>
+                        </div>
+                        <div class="fin-chart-card fin-chart-wide">
+                            <div class="fin-chart-title"><i class="fas fa-chart-line"></i> Balance acumulado — últimos 12 meses</div>
+                            <div style="position:relative;height:180px;"><canvas id="chart-balance"></canvas></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="finanzas-controls">
+                    <div class="fin-tabs">
+                        <button class="fin-tab active" data-tab="ingresos">
+                            <i class="fas fa-arrow-up"></i> Ingresos
+                        </button>
+                        <button class="fin-tab" data-tab="gastos">
+                            <i class="fas fa-arrow-down"></i> Gastos
+                        </button>
+                    </div>
+                    <div style="display:flex;gap:0.6rem;align-items:center;flex-wrap:wrap;">
+                        <select id="fin-filter-periodo" class="form-control" style="width:auto;min-width:145px;">
+                            <option value="mes">Este mes</option>
+                            <option value="anio">Este año</option>
+                            <option value="todo">Todo el tiempo</option>
+                        </select>
+                        <button id="manage-cats-btn" class="btn btn-secondary">
+                            <i class="fas fa-tags"></i>
+                            <span>Categorías</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="fin-search-bar">
+                    <div class="fin-search-input-wrap">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="fin-search-text" placeholder="Buscar por descripción...">
+                    </div>
+                    <select id="fin-search-cat" class="form-control">
+                        <option value="">Todas las categorías</option>
+                    </select>
+                    <select id="fin-search-client" class="form-control">
+                        <option value="">Todos los clientes</option>
+                    </select>
+                    <input type="date" id="fin-search-from" class="form-control" title="Desde">
+                    <input type="date" id="fin-search-to" class="form-control" title="Hasta">
+                    <button class="btn btn-secondary" id="fin-clear-search" title="Limpiar filtros">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div id="fin-ingresos-list" class="fin-list"></div>
+                <div id="fin-gastos-list" class="fin-list" style="display:none;"></div>
+            </section>
+
+            <!-- Calendar View (unused, calendar moved to dashboard) -->
+            <section id="view-calendar" class="view"></section>
+
+            <!-- Manual de Uso View -->
+            <section id="view-manual" class="view">
+                <div class="section-banner banner-manual">
+                    <div class="banner-left">
+                        <div class="banner-icon-wrap"><i class="fas fa-book"></i></div>
+                        <div>
+                            <h1>Manual de Uso</h1>
+                            <p class="subtitle">Guía completa para aprovechar al máximo el sistema</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="manual-layout">
+                    <!-- Índice lateral -->
+                    <aside class="manual-index">
+                        <div class="manual-index-title"><i class="fas fa-list"></i> Secciones</div>
+                        <a class="manual-index-item active" href="#m-tareas">Tareas</a>
+                        <a class="manual-index-item" href="#m-dashboard">Control de Tareas</a>
+                        <a class="manual-index-item" href="#m-proyectos">Proyectos</a>
+                        <a class="manual-index-item" href="#m-reuniones">Reuniones</a>
+                        <a class="manual-index-item" href="#m-presupuestos">Presupuestos</a>
+                        <a class="manual-index-item" href="#m-clientes">Clientes</a>
+                        <a class="manual-index-item" href="#m-finanzas">Finanzas</a>
+                        <a class="manual-index-item" href="#m-prospeccion">Centro de Prospección</a>
+                        <a class="manual-index-item" href="#m-kb">Base de Conocimiento</a>
+                        <a class="manual-index-item" href="#m-usuarios">Mi Equipo</a>
+                        <a class="manual-index-item" href="#m-registro">Registro</a>
+                    </aside>
+
+                    <!-- Contenido -->
+                    <div class="manual-content">
+
+                        <div class="manual-section" id="m-tareas">
+                            <div class="manual-section-header">
+                                <div class="manual-icon" style="background:rgba(96,165,250,0.18);color:#60A5FA;"><i class="fas fa-tasks"></i></div>
+                                <h2>Tareas</h2>
+                            </div>
+                            <p>El corazón operativo del sistema. Acá vive el trabajo diario del equipo: cada tarea tiene un responsable, una fecha de entrega, prioridad y estado.</p>
+                            <h3>Estados de una tarea</h3>
+                            <ul class="manual-list">
+                                <li><strong>Pendiente</strong> — todavía no se empezó.</li>
+                                <li><strong>En Progreso</strong> — alguien está trabajando en ella ahora.</li>
+                                <li><strong>Completada</strong> — finalizada. El admin recibe una notificación automática.</li>
+                            </ul>
+                            <h3>Filtros disponibles</h3>
+                            <p>Podés filtrar por fecha (hoy, esta semana, este mes), estado, prioridad, cliente y proyecto. Los filtros se combinan entre sí para encontrar exactamente lo que necesitás.</p>
+                            <div class="manual-tip">
+                                <i class="fas fa-lightbulb"></i>
+                                Los usuarios con rol <strong>user</strong> solo ven las tareas asignadas a ellos. Los admins ven todas.
+                            </div>
+                            <h3>Notas del técnico</h3>
+                            <p>Cada tarea tiene un campo de notas internas donde el responsable puede documentar qué hizo, qué problema encontró o cómo lo resolvió. Muy útil para auditorías y para que el equipo no pierda contexto.</p>
+                        </div>
+
+                        <div class="manual-section" id="m-dashboard">
+                            <div class="manual-section-header">
+                                <div class="manual-icon" style="background:rgba(212,168,67,0.18);color:var(--gold-light);"><i class="fas fa-chart-pie"></i></div>
+                                <h2>Control de Tareas</h2>
+                            </div>
+                            <p>El panel principal del sistema. Muestra de un vistazo cuántas tareas están pendientes, en progreso y completadas.</p>
+                            <div class="manual-tip">
+                                <i class="fas fa-lightbulb"></i>
+                                Hacé clic en cualquier tarjeta de estadística para ir directo a las tareas filtradas por ese estado.
+                            </div>
+                            <h3>Calendario integrado</h3>
+                            <p>Debajo de las estadísticas hay un calendario mensual con todas las fechas de entrega de las tareas. Cada día con tareas muestra puntos de color según el estado (naranja = pendiente, azul = en progreso, verde = completada). Hacé clic en un día para filtrar automáticamente la sección Tareas y ver solo lo de esa fecha.</p>
+                        </div>
+
+                        <div class="manual-section" id="m-proyectos">
+                            <div class="manual-section-header">
+                                <div class="manual-icon" style="background:rgba(99,102,241,0.18);color:#818CF8;"><i class="fas fa-layer-group"></i></div>
+                                <h2>Proyectos</h2>
+                            </div>
+                            <p>Un proyecto agrupa tareas relacionadas bajo un mismo objetivo. Ideal para trabajos con varias etapas, como el desarrollo de un sitio web o el lanzamiento de un producto.</p>
+                            <h3>Cómo trabajar con proyectos</h3>
+                            <ol class="manual-list">
+                                <li><strong>Creás el proyecto</strong> con nombre, cliente, fechas de inicio y entrega, y un color identificador.</li>
+                                <li><strong>Agregás tareas</strong> desde el botón "Nueva Tarea" dentro del detalle del proyecto. Así quedan automáticamente vinculadas.</li>
+                                <li><strong>El progreso se calcula solo:</strong> a medida que completás tareas, la barra del proyecto sube. Si tenés 5 tareas y completás 3, el proyecto marca 60%.</li>
+                                <li><strong>Seguís el avance</strong> desde la vista de Proyectos (panorama general) o desde Tareas (trabajo del día a día).</li>
+                            </ol>
+                            <div class="manual-tip">
+                                <i class="fas fa-lightbulb"></i>
+                                También podés asignar un proyecto a cualquier tarea existente desde el modal de edición de tareas, en el campo "Proyecto".
+                            </div>
+                        </div>
+
+                        <div class="manual-section" id="m-reuniones">
+                            <div class="manual-section-header">
+                                <div class="manual-icon" style="background:rgba(244,114,182,0.18);color:#F472B6;"><i class="fas fa-handshake"></i></div>
+                                <h2>Reuniones</h2>
+                            </div>
+                            <p>Gestioná todas las reuniones del equipo: tanto virtuales (con link) como presenciales (con dirección). Cada usuario ve solo sus propias reuniones; los admins ven todas.</p>
+                            <h3>Campos principales</h3>
+                            <ul class="manual-list">
+                                <li><strong>Tipo:</strong> Virtual (activa el campo Link) o Presencial (activa el campo Dirección).</li>
+                                <li><strong>Temas a tratar:</strong> listá los puntos de la agenda antes de la reunión.</li>
+                                <li><strong>Notas/Resultados:</strong> completá después de la reunión con conclusiones y próximos pasos.</li>
+                                <li><strong>Duración:</strong> desde 15 minutos hasta 3 horas.</li>
+                            </ul>
+                            <h3>Vista Calendario</h3>
+                            <p>Dentro de la sección hay un calendario propio que muestra las reuniones del mes con chips de color (azul = virtual, verde = presencial). Hacé clic en un día para ver el detalle de todas las reuniones de esa fecha.</p>
+                            <h3>Estados</h3>
+                            <ul class="manual-list">
+                                <li><strong>Programada</strong> → podés marcarla como Realizada o Cancelada.</li>
+                                <li><strong>Realizada</strong> → ideal para completar las notas de resultado.</li>
+                                <li><strong>Cancelada</strong> → se muestra opaca para distinguirla visualmente.</li>
+                            </ul>
+                        </div>
+
+                        <div class="manual-section" id="m-presupuestos">
+                            <div class="manual-section-header">
+                                <div class="manual-icon" style="background:rgba(167,139,250,0.18);color:#A78BFA;"><i class="fas fa-file-invoice-dollar"></i></div>
+                                <h2>Presupuestos</h2>
+                            </div>
+                            <p>Control de cotizaciones enviadas a clientes y prospectos. Cada presupuesto tiene un flujo de estados que refleja en qué punto está la negociación.</p>
+                            <h3>Flujo de estados</h3>
+                            <ul class="manual-list">
+                                <li><strong>Borrador</strong> → todavía no se envió. Botón para marcar como Enviado.</li>
+                                <li><strong>Enviado</strong> → esperando respuesta. Botones Aceptado / Rechazado / Vencido.</li>
+                                <li><strong>Aceptado</strong> → botón para <strong>Convertir a Ingreso</strong> en Finanzas con un solo clic.</li>
+                                <li><strong>Rechazado / Vencido</strong> → botón para Reprogramar si querés reactivarlo.</li>
+                            </ul>
+                            <h3>PDF adjunto</h3>
+                            <p>Podés adjuntar el PDF del presupuesto directamente en el sistema (hasta 15 MB). Aparece como botón "Ver PDF" en la card, accesible para todo el equipo.</p>
+                            <h3>Filtros avanzados</h3>
+                            <p>Buscá por título o cliente, filtrá por estado, ordená por fecha o monto, y acotá por rango de fechas y monto mínimo/máximo.</p>
+                        </div>
+
+                        <div class="manual-section" id="m-clientes">
+                            <div class="manual-section-header">
+                                <div class="manual-icon" style="background:rgba(212,168,67,0.18);color:var(--gold-light);"><i class="fas fa-user-tie"></i></div>
+                                <h2>Clientes</h2>
+                            </div>
+                            <p>Directorio de todos tus clientes activos. Cada cliente puede tener logo, email, teléfono, Instagram y una descripción corta.</p>
+                            <p>Los clientes aparecen como opciones en Tareas, Presupuestos, Finanzas y Reuniones — siempre que cargues algo nuevo, podés vincularlo a un cliente existente.</p>
+                            <div class="manual-tip">
+                                <i class="fas fa-lightbulb"></i>
+                                Solo los admins pueden crear, editar y eliminar clientes. Todos pueden verlos.
+                            </div>
+                        </div>
+
+                        <div class="manual-section" id="m-finanzas">
+                            <div class="manual-section-header">
+                                <div class="manual-icon" style="background:rgba(52,211,153,0.18);color:#34D399;"><i class="fas fa-coins"></i></div>
+                                <h2>Finanzas</h2>
+                            </div>
+                            <p>Registro de todos los ingresos y gastos del negocio. No es contabilidad formal, es control operativo: saber en todo momento si el negocio genera más de lo que gasta.</p>
+                            <h3>Ingresos vs Gastos</h3>
+                            <p>Cada movimiento se clasifica con una categoría. Los ingresos pueden vincularse a un cliente. El balance se calcula automáticamente y cambia de color (azul = positivo, rojo = negativo).</p>
+                            <h3>Categorías personalizables</h3>
+                            <p>Usá el botón <strong>Categorías</strong> para agregar las tuyas propias. Las predeterminadas no se pueden eliminar, pero podés agregar todas las que necesites.</p>
+                            <h3>Gráficas</h3>
+                            <p>Hacé clic en <strong>Ver Gráficas</strong> para ver 4 visualizaciones:</p>
+                            <ul class="manual-list">
+                                <li><strong>Evolución mensual</strong> — barras comparando ingresos vs gastos en los últimos 12 meses.</li>
+                                <li><strong>Gastos por categoría</strong> — dona mostrando en qué se va el dinero.</li>
+                                <li><strong>Ingresos por categoría</strong> — dona mostrando de dónde viene el dinero.</li>
+                                <li><strong>Balance acumulado</strong> — línea de tiempo del balance neto.</li>
+                            </ul>
+                            <div class="manual-tip">
+                                <i class="fas fa-lightbulb"></i>
+                                Cambiá el filtro de período (Este mes / Este año / Todo el tiempo) para que las gráficas y los totales se actualicen automáticamente.
+                            </div>
+                        </div>
+
+                        <div class="manual-section" id="m-prospeccion">
+                            <div class="manual-section-header">
+                                <div class="manual-icon" style="background:rgba(251,191,36,0.18);color:#FBBF24;"><i class="fas fa-satellite-dish"></i></div>
+                                <h2>Centro de Prospección</h2>
+                            </div>
+                            <p>Es el tablero de ventas del negocio. Muestra todas las oportunidades comerciales organizadas en columnas según en qué etapa del proceso están. Funciona como un Kanban.</p>
+                            <h3>Las 6 etapas</h3>
+                            <ol class="manual-list">
+                                <li><strong>Prospecto</strong> — alguien mostró interés, todavía no hablaste.</li>
+                                <li><strong>Contactado</strong> — ya tuviste una primera conversación.</li>
+                                <li><strong>Propuesta</strong> — le enviaste un presupuesto o propuesta.</li>
+                                <li><strong>Negociando</strong> — están revisando condiciones o pidiendo cambios.</li>
+                                <li><strong>Ganado</strong> — aceptaron. ¡Cerraste la venta!</li>
+                                <li><strong>Perdido</strong> — no se concretó.</li>
+                            </ol>
+                            <h3>Cómo mover un deal</h3>
+                            <p>Simplemente <strong>arrastrá la card</strong> de una columna a la siguiente. El cambio se guarda automáticamente.</p>
+                            <div class="manual-tip">
+                                <i class="fas fa-lightbulb"></i>
+                                Cuando un deal pasa a <strong>Ganado</strong>, aparece el botón <i class="fas fa-coins" style="color:var(--completed-color);"></i> para convertirlo directamente en un ingreso en Finanzas, sin tener que cargar nada dos veces.
+                            </div>
+                            <h3>Valor ponderado</h3>
+                            <p>El stat "Valor Potencial" multiplica el monto de cada deal por su probabilidad de cierre. Así tenés una estimación realista de cuánto podría ingresar, no solo la suma bruta.</p>
+                        </div>
+
+                        <div class="manual-section" id="m-kb">
+                            <div class="manual-section-header">
+                                <div class="manual-icon" style="background:rgba(34,211,238,0.18);color:#22D3EE;"><i class="fas fa-book-open"></i></div>
+                                <h2>Base de Conocimiento</h2>
+                            </div>
+                            <p>Un repositorio de artículos, guías y documentación interna para el equipo. Todo el equipo puede leer, solo los admins pueden escribir.</p>
+                            <h3>Para qué usarla</h3>
+                            <ul class="manual-list">
+                                <li>Documentar procesos internos: cómo se onboardea un cliente, cómo se entrega un proyecto.</li>
+                                <li>FAQ con preguntas frecuentes del equipo.</li>
+                                <li>Plantillas de mensajes, propuestas o respuestas tipo.</li>
+                                <li>Recursos útiles: links, guías de herramientas, accesos.</li>
+                            </ul>
+                            <h3>Formato de los artículos</h3>
+                            <p>El contenido soporta formato básico:</p>
+                            <ul class="manual-list">
+                                <li><code># Título grande</code> y <code>## Subtítulo</code></li>
+                                <li><code>**texto en negrita**</code></li>
+                                <li><code>- item</code> para listas</li>
+                                <li><code>---</code> para separadores</li>
+                            </ul>
+                            <p>Los artículos se organizan por categorías que aparecen en el panel izquierdo con el conteo de artículos de cada una.</p>
+                        </div>
+
+                        <div class="manual-section" id="m-usuarios">
+                            <div class="manual-section-header">
+                                <div class="manual-icon" style="background:rgba(52,211,153,0.18);color:#34D399;"><i class="fas fa-users-cog"></i></div>
+                                <h2>Mi Equipo</h2>
+                            </div>
+                            <p>Gestión del equipo. Solo los admins pueden crear, editar o eliminar usuarios.</p>
+                            <h3>Roles</h3>
+                            <ul class="manual-list">
+                                <li><strong>Admin</strong> — acceso completo a todo el sistema. Ve todas las tareas, puede gestionar usuarios, clientes, finanzas, presupuestos y configuración.</li>
+                                <li><strong>User</strong> — acceso limitado. Ve solo sus tareas asignadas, puede registrar reuniones propias, leer la Base de Conocimiento y usar el Calendario.</li>
+                            </ul>
+                            <div class="manual-tip">
+                                <i class="fas fa-lightbulb"></i>
+                                No podés eliminar tu propio usuario. Siempre debe quedar al menos un admin activo en el sistema.
+                            </div>
+                        </div>
+
+                        <div class="manual-section" id="m-registro">
+                            <div class="manual-section-header">
+                                <div class="manual-icon" style="background:rgba(167,139,250,0.18);color:#A78BFA;"><i class="fas fa-history"></i></div>
+                                <h2>Registro</h2>
+                            </div>
+                            <p>Historial completo de todo lo que pasa en el sistema. Solo visible para admins.</p>
+                            <p>Cada acción queda registrada con: quién la hizo, qué fue, cuándo y con qué datos. Útil para auditorías, para resolver conflictos y para entender qué cambió y cuándo.</p>
+                            <p>Podés buscar por usuario, tipo de acción o cualquier detalle usando el buscador en tiempo real.</p>
+                            <div class="manual-tip">
+                                <i class="fas fa-lightbulb"></i>
+                                Si algo "desapareció" o "cambió solo", el Registro es el primer lugar donde buscar. Siempre queda la huella de quién hizo qué.
+                            </div>
+                        </div>
+
+                    </div><!-- /manual-content -->
+                </div><!-- /manual-layout -->
+            </section>
+
         </main>
     </div>
 
@@ -314,6 +1017,12 @@
                             <option value="">Sin cliente</option>
                         </select>
                     </div>
+                </div>
+                <div class="form-group">
+                    <label for="task-project">Proyecto</label>
+                    <select id="task-project">
+                        <option value="">Sin proyecto</option>
+                    </select>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
@@ -466,6 +1175,503 @@
         </div>
     </div>
 
+    <!-- Modal Proyecto (crear/editar) -->
+    <div id="proyecto-modal" class="modal">
+        <div class="modal-content" style="max-width:580px;">
+            <div class="modal-header">
+                <h2 id="proyecto-modal-title">Nuevo Proyecto</h2>
+                <button class="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="proyecto-form">
+                <input type="hidden" id="proy-id">
+                <div class="form-group">
+                    <label for="proy-name">Nombre del Proyecto</label>
+                    <input type="text" id="proy-name" required placeholder="Ej: Rediseño web corporativo">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="proy-client">Cliente</label>
+                        <input type="text" id="proy-client" placeholder="Nombre del cliente" list="proy-client-list">
+                        <datalist id="proy-client-list"></datalist>
+                    </div>
+                    <div class="form-group">
+                        <label for="proy-status-field">Estado</label>
+                        <select id="proy-status-field">
+                            <option value="en_curso">En Curso</option>
+                            <option value="pausado">Pausado</option>
+                            <option value="entregado">Entregado</option>
+                            <option value="cancelado">Cancelado</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="proy-description">Descripción</label>
+                    <textarea id="proy-description" rows="2" placeholder="Objetivo y alcance del proyecto..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="proy-start">Inicio</label>
+                        <input type="date" id="proy-start">
+                    </div>
+                    <div class="form-group">
+                        <label for="proy-end">Entrega estimada</label>
+                        <input type="date" id="proy-end">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="proy-budget">Presupuesto ($)</label>
+                        <input type="number" id="proy-budget" min="0" step="0.01" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label>Color del proyecto</label>
+                        <div class="proy-color-picker" id="proy-color-picker"></div>
+                        <input type="hidden" id="proy-color" value="#60A5FA">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary close-modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Proyecto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Detalle Proyecto -->
+    <div id="proyecto-detail-modal" class="modal">
+        <div class="modal-content" style="max-width:740px;max-height:88vh;display:flex;flex-direction:column;">
+            <div class="modal-header">
+                <div style="flex:1;min-width:0;">
+                    <h2 id="proy-detail-name"></h2>
+                    <div id="proy-detail-meta" style="margin-top:0.35rem;font-size:0.8rem;color:var(--text-muted);display:flex;gap:0.85rem;flex-wrap:wrap;"></div>
+                </div>
+                <button class="close-modal" style="align-self:flex-start;"><i class="fas fa-times"></i></button>
+            </div>
+            <div style="overflow-y:auto;flex:1;">
+                <div id="proy-detail-progress-wrap" style="margin-bottom:1.25rem;">
+                    <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:var(--text-muted);margin-bottom:0.4rem;">
+                        <span>Progreso</span><span id="proy-detail-progress-pct">0%</span>
+                    </div>
+                    <div style="height:8px;background:rgba(255,255,255,0.08);border-radius:99px;overflow:hidden;">
+                        <div id="proy-detail-progress-bar" style="height:100%;border-radius:99px;transition:width 0.4s ease;"></div>
+                    </div>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.85rem;">
+                    <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:500;color:var(--text);">Tareas del Proyecto</h3>
+                    <button class="btn btn-primary" id="proy-add-task-btn" style="padding:0.45rem 0.9rem;font-size:0.82rem;">
+                        <i class="fas fa-plus"></i> Nueva Tarea
+                    </button>
+                </div>
+                <div id="proy-detail-tasks"></div>
+            </div>
+            <div class="modal-footer admin-only" style="justify-content:flex-start;">
+                <button class="btn btn-secondary" id="proy-detail-edit-btn"><i class="fas fa-edit"></i> Editar</button>
+                <button class="btn btn-secondary" id="proy-detail-delete-btn" style="color:var(--priority-high);border-color:rgba(248,113,113,0.3);"><i class="fas fa-trash"></i> Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Deal Pipeline -->
+    <div id="deal-modal" class="modal">
+        <div class="modal-content" style="max-width:580px;max-height:90vh;display:flex;flex-direction:column;">
+            <div class="modal-header">
+                <h2 id="deal-modal-title">Nueva Oportunidad</h2>
+                <button class="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="deal-form" style="overflow-y:auto;flex:1;padding-right:0.25rem;">
+                <input type="hidden" id="deal-id">
+                <div class="form-group">
+                    <label for="deal-title">Nombre de la oportunidad</label>
+                    <input type="text" id="deal-title" required placeholder="Ej: Rediseño web Empresa ABC">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="deal-contact">Contacto / Empresa</label>
+                        <input type="text" id="deal-contact" required placeholder="Nombre del contacto" list="deal-contact-list">
+                        <datalist id="deal-contact-list"></datalist>
+                    </div>
+                    <div class="form-group">
+                        <label for="deal-stage">Etapa</label>
+                        <select id="deal-stage">
+                            <option value="prospecto">Prospecto</option>
+                            <option value="contactado">Contactado</option>
+                            <option value="propuesta">Propuesta</option>
+                            <option value="negociando">Negociando</option>
+                            <option value="ganado">Ganado</option>
+                            <option value="perdido">Perdido</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="deal-amount">Valor potencial ($)</label>
+                        <input type="number" id="deal-amount" min="0" step="0.01" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label for="deal-probability">Probabilidad (%)</label>
+                        <input type="number" id="deal-probability" min="0" max="100" placeholder="50">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="deal-close">Cierre estimado</label>
+                        <input type="date" id="deal-close">
+                    </div>
+                    <div class="form-group">
+                        <label for="deal-source">Fuente</label>
+                        <select id="deal-source">
+                            <option value="Referido">Referido</option>
+                            <option value="Web">Web</option>
+                            <option value="Redes Sociales">Redes Sociales</option>
+                            <option value="Llamada en frío">Llamada en frío</option>
+                            <option value="Evento">Evento</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="deal-assigned">Responsable</label>
+                    <select id="deal-assigned">
+                        <option value="">Sin asignar</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="deal-notes">Notas</label>
+                    <textarea id="deal-notes" rows="3" placeholder="Próximos pasos, contexto, observaciones..."></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary close-modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Reunión -->
+    <div id="reunion-modal" class="modal">
+        <div class="modal-content" style="max-width:640px;max-height:90vh;display:flex;flex-direction:column;">
+            <div class="modal-header">
+                <h2 id="reunion-modal-title">Nueva Reunión</h2>
+                <button class="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="reunion-form" style="overflow-y:auto;flex:1;padding-right:0.25rem;">
+                <input type="hidden" id="reun-id">
+
+                <!-- Tipo toggle -->
+                <div class="form-group">
+                    <label>Tipo de Reunión</label>
+                    <div class="reun-type-toggle">
+                        <button type="button" class="reun-type-btn active" data-rtype="virtual">
+                            <i class="fas fa-video"></i> Virtual
+                        </button>
+                        <button type="button" class="reun-type-btn" data-rtype="presencial">
+                            <i class="fas fa-map-marker-alt"></i> Presencial
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group" style="flex:2;">
+                        <label for="reun-title">Asunto / Nombre</label>
+                        <input type="text" id="reun-title" required placeholder="Ej: Presentación propuesta web">
+                    </div>
+                    <div class="form-group" style="flex:1;">
+                        <label for="reun-status-field">Estado</label>
+                        <select id="reun-status-field">
+                            <option value="programada">Programada</option>
+                            <option value="realizada">Realizada</option>
+                            <option value="cancelada">Cancelada</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="reun-client">Cliente / Empresa</label>
+                    <input type="text" id="reun-client" required placeholder="Nombre del cliente" list="reun-client-list">
+                    <datalist id="reun-client-list"></datalist>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="reun-date">Fecha</label>
+                        <input type="date" id="reun-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reun-time">Hora</label>
+                        <input type="time" id="reun-time" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reun-duration">Duración</label>
+                        <select id="reun-duration">
+                            <option value="15">15 min</option>
+                            <option value="30">30 min</option>
+                            <option value="45">45 min</option>
+                            <option value="60" selected>1 hora</option>
+                            <option value="90">1h 30min</option>
+                            <option value="120">2 horas</option>
+                            <option value="180">3 horas</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Campo virtual -->
+                <div class="form-group" id="reun-link-group">
+                    <label for="reun-link">Link de la reunión</label>
+                    <div class="input-with-prefix">
+                        <span class="input-prefix"><i class="fas fa-video"></i></span>
+                        <input type="url" id="reun-link" placeholder="https://meet.google.com/...">
+                    </div>
+                </div>
+
+                <!-- Campo presencial -->
+                <div class="form-group" id="reun-location-group" style="display:none;">
+                    <label for="reun-location">Lugar / Dirección</label>
+                    <div class="input-with-prefix">
+                        <span class="input-prefix"><i class="fas fa-map-marker-alt"></i></span>
+                        <input type="text" id="reun-location" placeholder="Ej: Av. Corrientes 1234, CABA">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="reun-topics">Temas a tratar</label>
+                    <textarea id="reun-topics" rows="3" placeholder="• Revisión del presupuesto&#10;• Definición de plazos&#10;• Dudas del cliente"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="reun-notes">Notas / Resultados</label>
+                    <textarea id="reun-notes" rows="2" placeholder="Conclusiones, acuerdos, próximos pasos..."></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary close-modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Reunión</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Artículo KB (crear/editar) -->
+    <div id="kb-modal" class="modal">
+        <div class="modal-content" style="max-width:680px;">
+            <div class="modal-header">
+                <h2 id="kb-modal-title">Nuevo Artículo</h2>
+                <button class="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="kb-form">
+                <input type="hidden" id="kb-id">
+                <div class="form-row">
+                    <div class="form-group" style="flex:2;">
+                        <label for="kb-title">Título</label>
+                        <input type="text" id="kb-title" required placeholder="Ej: Cómo onboardear un nuevo cliente">
+                    </div>
+                    <div class="form-group" style="flex:1;">
+                        <label for="kb-category">Categoría</label>
+                        <input type="text" id="kb-category" placeholder="Ej: Procesos" list="kb-cat-suggestions" required>
+                        <datalist id="kb-cat-suggestions">
+                            <option value="Procesos">
+                            <option value="FAQ">
+                            <option value="Guías">
+                            <option value="Plantillas">
+                            <option value="Recursos">
+                            <option value="General">
+                        </datalist>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="kb-content">Contenido</label>
+                    <div class="kb-format-hint">Podés usar: <code>**negrita**</code> · <code># Título</code> · <code>## Subtítulo</code> · líneas en blanco para separar párrafos</div>
+                    <textarea id="kb-content" rows="12" required placeholder="Escribí el contenido del artículo..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Archivo PDF adjunto</label>
+                    <div class="pdf-upload-area" id="kb-pdf-area">
+                        <input type="file" id="kb-pdf-file" accept="application/pdf" style="display:none;">
+                        <div class="pdf-upload-current" id="kb-pdf-current" style="display:none;">
+                            <i class="fas fa-file-pdf" style="color:#F87171;font-size:1.3rem;"></i>
+                            <span id="kb-pdf-name" style="flex:1;font-size:0.85rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+                            <a id="kb-pdf-view" href="#" target="_blank" class="btn btn-icon" title="Ver PDF"><i class="fas fa-eye"></i></a>
+                            <button type="button" class="btn btn-icon" id="kb-pdf-remove" title="Quitar PDF" style="color:var(--priority-high);"><i class="fas fa-trash"></i></button>
+                        </div>
+                        <label for="kb-pdf-file" class="pdf-upload-placeholder" id="kb-pdf-placeholder">
+                            <i class="fas fa-file-pdf"></i>
+                            <span>Adjuntar PDF <span style="color:var(--text-muted);font-weight:400;">(máx. 15 MB)</span></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary close-modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Artículo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Detalle Artículo KB -->
+    <div id="kb-detail-modal" class="modal">
+        <div class="modal-content kb-detail-content">
+            <div class="modal-header">
+                <div style="flex:1;min-width:0;">
+                    <h2 id="kb-detail-title" style="white-space:normal;line-height:1.3;"></h2>
+                    <div id="kb-detail-meta" style="margin-top:0.35rem;font-size:0.8rem;color:var(--text-muted);display:flex;gap:0.85rem;flex-wrap:wrap;"></div>
+                </div>
+                <button class="close-modal" style="align-self:flex-start;"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="kb-detail-body" id="kb-detail-body"></div>
+            <div class="modal-footer admin-only" id="kb-detail-actions" style="justify-content:flex-start;">
+                <button class="btn btn-secondary" id="kb-detail-edit-btn"><i class="fas fa-edit"></i> Editar</button>
+                <button class="btn btn-secondary" id="kb-detail-delete-btn" style="color:var(--priority-high);border-color:rgba(248,113,113,0.3);"><i class="fas fa-trash"></i> Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Presupuesto -->
+    <div id="presupuesto-modal" class="modal">
+        <div class="modal-content" style="max-width:620px;">
+            <div class="modal-header">
+                <h2 id="pres-modal-title">Nuevo Presupuesto</h2>
+                <button class="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="presupuesto-form">
+                <input type="hidden" id="pres-id">
+                <div class="form-group">
+                    <label for="pres-title">Título del Presupuesto</label>
+                    <input type="text" id="pres-title" required placeholder="Ej: Rediseño web corporativo">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="pres-client">Cliente / Prospecto</label>
+                        <input type="text" id="pres-client" required placeholder="Nombre del cliente" list="pres-client-list">
+                        <datalist id="pres-client-list"></datalist>
+                    </div>
+                    <div class="form-group">
+                        <label for="pres-amount">Monto</label>
+                        <input type="number" id="pres-amount" required min="0" step="0.01" placeholder="0.00">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="pres-description">Detalle del trabajo</label>
+                    <textarea id="pres-description" rows="3" placeholder="Describe los servicios o productos incluidos..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="pres-date">Fecha</label>
+                        <input type="date" id="pres-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="pres-valid-until">Válido hasta</label>
+                        <input type="date" id="pres-valid-until">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="pres-status">Estado</label>
+                    <select id="pres-status">
+                        <option value="borrador">Borrador</option>
+                        <option value="enviado">Enviado</option>
+                        <option value="aceptado">Aceptado</option>
+                        <option value="rechazado">Rechazado</option>
+                        <option value="vencido">Vencido</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="pres-notes">Notas internas</label>
+                    <textarea id="pres-notes" rows="2" placeholder="Observaciones, condiciones especiales..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Archivo PDF</label>
+                    <div class="pdf-upload-area" id="pres-pdf-area">
+                        <input type="file" id="pres-pdf-file" accept="application/pdf" style="display:none;">
+                        <div class="pdf-upload-current" id="pres-pdf-current" style="display:none;">
+                            <i class="fas fa-file-pdf" style="color:#F87171;font-size:1.3rem;"></i>
+                            <span id="pres-pdf-name" style="flex:1;font-size:0.85rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+                            <a id="pres-pdf-view" href="#" target="_blank" class="btn btn-icon" title="Ver PDF"><i class="fas fa-eye"></i></a>
+                            <button type="button" class="btn btn-icon" id="pres-pdf-remove" title="Quitar PDF" style="color:var(--priority-high);"><i class="fas fa-trash"></i></button>
+                        </div>
+                        <label for="pres-pdf-file" class="pdf-upload-placeholder" id="pres-pdf-placeholder">
+                            <i class="fas fa-file-pdf"></i>
+                            <span>Adjuntar PDF <span style="color:var(--text-muted);font-weight:400;">(máx. 15 MB)</span></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary close-modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Presupuesto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Finanza -->
+    <div id="finanza-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="finanza-modal-title">Nuevo Movimiento</h2>
+                <button class="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="finanza-form">
+                <input type="hidden" id="finanza-id">
+                <div class="form-group">
+                    <label>Tipo</label>
+                    <div class="fin-type-toggle">
+                        <button type="button" class="fin-type-btn active" data-type="ingreso">
+                            <i class="fas fa-arrow-up"></i> Ingreso
+                        </button>
+                        <button type="button" class="fin-type-btn" data-type="gasto">
+                            <i class="fas fa-arrow-down"></i> Gasto
+                        </button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="fin-description">Descripción</label>
+                    <input type="text" id="fin-description" required placeholder="Ej: Servicio de diseño web">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fin-amount">Monto</label>
+                        <input type="number" id="fin-amount" required min="0" step="0.01" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label for="fin-date">Fecha</label>
+                        <input type="date" id="fin-date" required>
+                    </div>
+                </div>
+                <div class="form-group" id="fin-client-group">
+                    <label for="fin-client">Cliente (opcional)</label>
+                    <select id="fin-client">
+                        <option value="">Sin cliente</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="fin-category">Categoría</label>
+                    <select id="fin-category"></select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary close-modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="finanza-submit-btn">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Categorías -->
+    <div id="cat-modal" class="modal">
+        <div class="modal-content" style="max-width:480px;">
+            <div class="modal-header">
+                <h2>Gestionar Categorías</h2>
+                <button class="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="fin-tabs cat-modal-tabs" style="margin-bottom:1.25rem;">
+                <button class="fin-tab active" data-cattab="ingreso"><i class="fas fa-arrow-up"></i> Ingresos</button>
+                <button class="fin-tab" data-cattab="gasto"><i class="fas fa-arrow-down"></i> Gastos</button>
+            </div>
+            <div id="cat-list-ingreso" class="cat-list"></div>
+            <div id="cat-list-gasto" class="cat-list" style="display:none;"></div>
+            <div class="cat-add-row">
+                <input type="text" id="cat-new-name" placeholder="Nueva categoría..." maxlength="40">
+                <button class="btn btn-primary" id="cat-add-btn"><i class="fas fa-plus"></i> Agregar</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Lightbox de imagen -->
     <div id="lightbox" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:3000;align-items:center;justify-content:center;cursor:zoom-out;backdrop-filter:blur(8px);" onclick="document.getElementById('lightbox').style.display='none'">
         <img id="lightbox-img" src="" alt="" style="max-width:90vw;max-height:90vh;border-radius:12px;box-shadow:0 30px 80px rgba(0,0,0,0.7);object-fit:contain;">
@@ -478,6 +1684,7 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>
