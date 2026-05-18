@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: gondesck-pro
+    runtime: node
+    buildCommand: npm install
+    startCommand: node server/server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: gondesck-pro-db
+          property: connectionString
+      - key: SESSION_SECRET
+        generateValue: true
+
+databases:
+  - name: gondesck-pro-db
+    databaseName: gondesck_pro
+    user: gondesck_pro
