@@ -152,6 +152,15 @@ if (useSQLite) {
             try { await pool.query('ALTER TABLE tasks ADD COLUMN notes TEXT'); } catch (e) {}
             try { await pool.query('ALTER TABLE notifications ADD COLUMN username TEXT'); } catch (e) {}
 
+            // Auto-seed: crear admin si no hay usuarios
+            const countResult = await pool.query('SELECT COUNT(*) as n FROM users');
+            if (parseInt(countResult.rows[0].n) === 0) {
+                const bcrypt = require('bcryptjs');
+                const hash = bcrypt.hashSync('admin123', 10);
+                await pool.query('INSERT INTO users (username, password, role) VALUES ($1, $2, $3)', ['admin', hash, 'admin']);
+                console.log('Usuario admin creado automáticamente (admin/admin123)');
+            }
+
             console.log('Database initialized (PostgreSQL)');
         } catch (err) {
             console.error('Error initializing PostgreSQL:', err);
