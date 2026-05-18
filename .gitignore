@@ -1,5 +1,4 @@
 node_modules/
-data/*
-!data/gondesck.db
+data/
 *.log
 .env
