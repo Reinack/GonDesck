@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../database');
-const { logActivity } = require('../helpers/logger');
+const { logActivity } = require('../helpers/utils');
 const { isAuthenticated } = require('../middleware/auth');
 
 // GET all tasks

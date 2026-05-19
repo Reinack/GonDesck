@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const { logActivity } = require('../helpers/logger');
+const { logActivity } = require('../helpers/utils');
 const { isAuthenticated, isAdmin } = require('../middleware/auth');
 
 const uploadDir = path.join(__dirname, '../../public/uploads');

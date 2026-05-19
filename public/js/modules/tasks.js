@@ -186,7 +186,7 @@ function closeModal() {
 async function updateStats() {
     const app = window.app;
     try {
-        const response = await fetch('/api/stats');
+        const response = await fetch('/api/tasks/stats/all');
         if (response.status === 401) return;
         const stats = await response.json();
         app.statPending.textContent = stats.pendiente;

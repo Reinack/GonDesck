@@ -4,7 +4,7 @@ const db = require('../database');
 const { isAuthenticated, isAdmin } = require('../middleware/auth');
 
 // GET activity logs (admin only)
-router.get('/', isAuthenticated, isAdmin, async (req, res) => {
+router.get('/logs', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const result = await db.query('SELECT * FROM activity_logs ORDER BY created_at DESC LIMIT 500');
         res.json(result.rows);
